@@ -1,0 +1,47 @@
+--------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /home/users/s1155159146/fypdata.txt
+  log type:  text
+ opened on:  24 Nov 2023, 03:40:37
+
+. xtset region_numeric MonthYear
+
+Panel variable: region_numeric (strongly balanced)
+ Time variable: MonthYear, Jan-20 to Dec-22, but with gaps
+         Delta: 1 day
+
+. xtreg MonthlyStatesRetailSalesind StringencyIndexfirstdayofe AverageHourlyPriv
+> ateEarnings PopulationDensity, robust fe
+
+Fixed-effects (within) regression               Number of obs     =      1,836
+Group variable: region_num~c                    Number of groups  =         51
+
+R-squared:                                      Obs per group:
+     Within  = 0.0140                                         min =         36
+     Between = 0.0025                                         avg =       36.0
+     Overall = 0.0000                                         max =         36
+
+                                                F(3, 50)          =       5.57
+corr(u_i, Xb) = -0.7455                         Prob > F          =     0.0022
+
+                         (Std. err. adjusted for 51 clusters in region_numeric)
+-------------------------------------------------------------------------------
+              |               Robust
+MonthlyStat~d | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------+----------------------------------------------------------------
+StringencyI~e |  -6.064961   2.081088    -2.91   0.005    -10.24495   -1.884973
+AverageHour~s |   17.75076   6.015843     2.95   0.005     5.667581    29.83394
+PopulationD~y |   1.512312   8.649786     0.17   0.862    -15.86129    18.88592
+        _cons |  -1603.197   1478.949    -1.08   0.284    -4573.753    1367.359
+--------------+----------------------------------------------------------------
+      sigma_u |  1230.1545
+      sigma_e |  1425.1591
+          rho |  .42695457   (fraction of variance due to u_i)
+-------------------------------------------------------------------------------
+
+. log close
+      name:  <unnamed>
+       log:  /home/users/s1155159146/fypdata.txt
+  log type:  text
+ closed on:  24 Nov 2023, 03:40:44
+--------------------------------------------------------------------------------
