@@ -13,12 +13,13 @@ SELECT * FROM student_mat;
 ALTER TABLE student_mat
 ADD COLUMN student_id INT AUTO_INCREMENT PRIMARY KEY;
 
--- 1. Family relationship 
+-- 1. Family Relationship 
 
 -- Find out if parents separate, who would take care of their children
 SELECT famrel, Pstatus, student_id, guardian FROM student_mat
 WHERE Pstatus='A' 
 and famsize='LE3'; -- only selecting family with three or fewer than three members
+-- Findings: 
 -- Mainly mothers (18 out of 20 cases) take care of their children
 
 -- Compare average level of family relationship under different conditions
@@ -30,6 +31,7 @@ SELECT
 (SELECT Avg(famrel) FROM student_mat) total_avg
 FROM student_mat
 LIMIT 1;
+-- Findings:
 -- Average level of family relationship is lower if parents separate or students have romantic relationships 
 -- Effect of having internet access on family relationships is insignificant
 
@@ -46,15 +48,17 @@ GROUP BY guardian)
 
 SELECT * FROM father_at_home f
 JOIN mother_at_home m ON f.guardian=m.guardian;
+-- Findings:
 -- Only 17% stay-at-home father are gurardian but 65% of stay-at-home mother are guardian
 
 
--- 2. School location and student's travel time
+-- 2. School Location and Student's Travel Time
 
 -- Find out any students choose the school because it is close to home at first,
 -- but eventually need to travel for a long time
 SELECT * FROM student_mat
 WHERE traveltime=4 and reason='home';
+-- Findings:
 -- Two students 
 
 -- Compare travel time between students living in urban and rural areas
@@ -66,11 +70,12 @@ ORDER BY traveltime DESC;
 SELECT DISTINCT address, Avg (traveltime) OVER(PARTITION BY address) avg_traveltime, 
 COUNT(traveltime) OVER(PARTITION BY address)/(SELECT COUNT(*)FROM student_mat) proportion
 FROM student_mat;
+-- Findings:
 -- Average travel time of students living in urban is lower
 -- Proportion of students living in urban is ~0.78
 
 
--- 3. Academic performance
+-- 3. Academic Performance
 
 -- Summarize support to students
 SELECT schoolsup,famsup, paid, COUNT(*) total_number, 
@@ -78,6 +83,7 @@ COUNT(*)/(SELECT COUNT(*) FROM student_mat)*100 Percentage
 FROM student_mat
 GROUP BY schoolsup, famsup, paid
 ORDER BY total_number DESC;
+-- Findings:
 -- More than 85% of students do not get educational support from school
 
 -- Compare students' study time having support (from family and/or extra school) or not having support 
@@ -108,6 +114,8 @@ JOIN famsupport ON bothsupport.studytime=famsupport.studytime
 JOIN classsupport ON bothsupport.studytime=classsupport.studytime
 JOIN total ON bothsupport.studytime=total.studytime
 ORDER BY total.studytime;
+-- Findings:
+-- (Details in visualization)
 
 -- Find out the relationship between study time and academic performance 
 SELECT school, ROUND((G1+G2+G3)/3,0) rounded_point, ROUND(AVG(studytime),1) avg_studytime FROM student_mat
@@ -129,7 +137,8 @@ ORDER BY avg_point DESC, studytime;
 -- Sort outstanding students
 SELECT student_id, Dalc, Walc FROM student_mat
 WHERE ROUND((G1+G2+G3)/3,0)=19 AND studytime=1 AND schoolsup='No' AND famsup='No' AND paid='No';
--- Their alcohol consumption level is very low
+-- Findings: 
+-- Outstanding students' alcohol consumption level is very low
 
 -- Sort outstanding students using student ID
 SELECT student_id, Dalc, Walc FROM student_mat
@@ -142,6 +151,7 @@ ORDER BY (G1+G2+G3)/3
 LIMIT 30) -- Selecting the bottom 30
 SELECT student_id, Dalc, Walc FROM bottom_30
 WHERE Dalc>=4 OR Walc>=4; -- 4-5 belongs to high clcohol consumption level
+-- Findings:
 -- 5 students from the bottom 30 consume alcohol frequently on weekends but not on weekdays
 -- Effect of weekend consumption on academic performance may be higher than weekday consumption
 
@@ -167,6 +177,7 @@ JOIN student_por p USING (school, sex, age, address, famsize, Pstatus, Medu, Fed
 SELECT COUNT(student_id) FROM student_por
 WHERE student_id NOT IN (SELECT p.student_id FROM student_mat m
 JOIN student_por p USING (school, sex, age, address, famsize, Pstatus, Medu, Fedu, Mjob, Fjob, reason, nursery ,internet));
+-- Findings:
 -- 25 students only attend maths course, 275 students only attend portuguese course, 382 students attend both
 -- Total number of students in combined dataset is (25+275+382)=682
 
@@ -182,5 +193,6 @@ AVG(m.absences) average_absence_mat, AVG(p.absences) average_absence_por FROM st
 JOIN student_por p USING (school, sex, age, address, famsize, Pstatus, Medu, Fedu, Mjob, Fjob, reason, nursery ,internet)
 GROUP BY WALC
 ORDER BY WALC DESC;
+-- Findings:
 -- Absences in math courses are more severe than portuguese courses
 -- Absences for students with high alcohol consumption levels in both courses are more severe
