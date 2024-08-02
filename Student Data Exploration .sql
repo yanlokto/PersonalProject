@@ -1,6 +1,6 @@
 -- Data retrieved from https://www.kaggle.com/datasets/uciml/student-alcohol-consumption/data
 -- Visualizations link https://public.tableau.com/app/profile/lok.to.yan/vizzes
--- Codes and findings below:
+-- Coding and findings below:
 
 USE Project;
 
